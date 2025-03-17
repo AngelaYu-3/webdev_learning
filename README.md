@@ -1,2 +1,2 @@
 # webdev learning
-learning node.js & react JS!
+learning html, css, javascript, node.js & react!
