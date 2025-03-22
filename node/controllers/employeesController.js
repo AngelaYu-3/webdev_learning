@@ -1,17 +1,27 @@
-const data = {};
-data.employees = require('../model/employees.json');
+const Employee = require('../model/Employee');
 
-const getAllEmployees = (request, response) => {
+const getAllEmployees = async (request, response) => {
     // retrieve data from a server, requests data w/o modifying it
-    response.json(data.employees);
+    const employees = await Employee.find();
+    if (!employees) return response.status(204).json({ 'message': 'no employees found.'});
+    response.json(employees);
 }
 
-const createNewEmployee = (request, response) => {
+const createNewEmployee = async (request, response) => {
     // create new resource or submit data for processing
-    response.json({
-        "firstname": request.body.firstname,
-        "lastname": request.body.lastname
-    });
+    if (!request?.body?.firstname || !request?.body?.lastname) {
+        return response.status(400).json({'message': 'first and last names are required'});
+    }
+
+    try {
+        const result = await Employee.create({
+            firstname: request.body.firstname,
+            lastname: request.body.lastname
+        });
+    } catch (err) {
+        console.error(err);
+    }
+    response.status(201).json(result);
 }
 
 const updateEmployee = (request, response) => {
